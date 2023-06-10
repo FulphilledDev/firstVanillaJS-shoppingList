@@ -5,6 +5,13 @@ const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
 
+const displayItems = () => {
+  const itemsFromStorage = getItemsFromStorage();
+  itemsFromStorage.forEach((item) => addItemToDOM(item));
+
+  checkUI();
+};
+
 const onAddItemSubmit = (e) => {
   e.preventDefault();
 
@@ -38,23 +45,6 @@ const addItemToDOM = (item) => {
   itemList.appendChild(li);
 };
 
-const addItemToStorage = (item) => {
-  let itemsFromStorage;
-
-  // Check to see if there are any 'items' in storage else set to empty array
-  if (localStorage.getItem('items') === null) {
-    itemsFromStorage = [];
-  } else {
-    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
-  }
-
-  // Add new item to PARSED array from storage
-  itemsFromStorage.push(item);
-
-  // Convert parsed to JSON string and set to local storage
-  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
-};
-
 const createButton = (classes) => {
   const button = document.createElement('button');
   button.className = classes;
@@ -67,6 +57,29 @@ const createIcon = (classes) => {
   const icon = document.createElement('i');
   icon.className = classes;
   return icon;
+};
+
+const addItemToStorage = (item) => {
+  const itemsFromStorage = getItemsFromStorage();
+
+  // Add new item to PARSED array from storage
+  itemsFromStorage.push(item);
+
+  // Convert parsed to JSON string and set to local storage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+};
+
+const getItemsFromStorage = () => {
+  let itemsFromStorage;
+
+  // Check to see if there are any 'items' in storage else set to empty array
+  if (localStorage.getItem('items') === null) {
+    itemsFromStorage = [];
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  }
+
+  return itemsFromStorage;
 };
 
 const removeItem = (e) => {
@@ -119,5 +132,6 @@ itemForm.addEventListener('submit', onAddItemSubmit);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
 itemFilter.addEventListener('input', filterItems);
+document.addEventListener('DOMContentLoaded', displayItems);
 
 checkUI();
